@@ -7,7 +7,7 @@ app = FastAPI()
 
 # Train model at startup
 iris = load_iris()
-model = DecisionTreeClassifier(random_state=42)
+model = DecisionTreeClassifier(max_depth=5, random_state=1)
 model.fit(iris.data, iris.target)
 class_names = ["setosa", "versicolor", "virginica"]
 
@@ -17,6 +17,7 @@ async def health():
 
 @app.get("/predict")
 async def predict(sl: float, sw: float, pl: float, pw: float):
+    # Ensure features are in the exact order: SL, SW, PL, PW
     features = np.array([[sl, sw, pl, pw]])
     pred = int(model.predict(features)[0])
     return {"prediction": pred, "class_name": class_names[pred]}
